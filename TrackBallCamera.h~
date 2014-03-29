@@ -1,0 +1,35 @@
+
+#include <GL/gl.h>
+#include <SDL/SDL.h>
+#include <GL/glu.h>
+#include "sdlglutils.h"
+
+class TrackBallCamera
+{
+public:
+    TrackBallCamera();
+ 
+    virtual void OnMouseMotion(const SDL_MouseMotionEvent & event);
+    virtual void OnMouseButton(const SDL_MouseButtonEvent & event);
+    virtual void OnKeyboard(const SDL_KeyboardEvent & event);
+ 
+    virtual void look();
+    virtual void setMotionSensivity(double sensivity);
+    virtual void setScrollSensivity(double sensivity);
+ 
+    virtual double getdistance(){return _distance;};
+    virtual double getangleY(){return _angleY;};
+    virtual double getangleZ(){return _angleZ;};
+    
+    
+    virtual ~TrackBallCamera();
+protected:
+    double _motionSensivity;
+    double _scrollSensivity;
+    bool _hold;
+    double _distance;
+    double _angleY;
+    double _angleZ;
+    SDL_Cursor * _hand1;
+    SDL_Cursor * _hand2;
+};

@@ -1,0 +1,1 @@
+/usr/bin/c++   -g -std=c++11 -lSDL -lGL -lGLU -lSDL_image -g    CMakeFiles/testopengl.dir/brol.o CMakeFiles/testopengl.dir/sdlglutils.o CMakeFiles/testopengl.dir/TrackBallCamera.o  -o testopengl -rdynamic 

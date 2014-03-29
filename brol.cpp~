@@ -1,0 +1,148 @@
+#include <SDL/SDL.h>
+#include <GL/gl.h>
+#include <GL/glu.h>
+#include <cstdlib>
+#include <iostream>
+#include "sdlglutils.h"
+#include "TrackBallCamera.h"
+#include "cubeClass.cpp"
+#include "GroundClass.cpp"
+    
+    
+
+TrackBallCamera* camera;
+GLuint texture1;
+GLuint texture2;
+cubeClass* cube1 = new cubeClass(0,0,0,1,1,1);
+cubeClass* cube2 = new cubeClass(-5,-5,0,1,1,1);
+// cubeClass* cube3 = new cubeClass(2,0,2,1,1,1);
+
+GroundClass* ground1 = new GroundClass(-1,500);
+
+ 
+void Dessiner();
+
+void stop()
+{
+    delete camera; //destruction de la caméra allouée dynamiquement
+    SDL_Quit();
+}
+
+int main()
+{
+
+
+    SDL_Event event;
+    const Uint32 time_per_frame = 1000/50;
+ 
+    SDL_Init(SDL_INIT_VIDEO);
+    atexit(stop);
+    SDL_WM_SetCaption("SDL GL Application", NULL);
+    SDL_SetVideoMode(1024, 768, 32, SDL_OPENGL);
+    glEnable(GL_DEPTH_TEST);
+ 
+    glMatrixMode( GL_PROJECTION );
+    glLoadIdentity();
+    gluPerspective(70,(double)1024/768,1,1000);
+    
+    SDL_EnableKeyRepeat(10,10);
+    
+    
+    
+//     Dessiner();
+    
+    camera = new TrackBallCamera();
+    camera->setScrollSensivity(0.1);
+    
+    Uint32 start_time, stop_time;
+    Uint32 last_time = SDL_GetTicks();
+    Uint32 current_time,ellapsed_time;
+    
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_TEXTURE_2D);
+ 
+    texture1 = loadTexture("/home/phvera/projects/testopengl/crate.jpg");
+    texture2 = loadTexture("/home/phvera/projects/testopengl/ground.jpg");
+    
+    for (;;)
+    {
+
+        start_time = SDL_GetTicks();
+
+        while(SDL_PollEvent(&event))
+        {
+            switch(event.type)
+            {
+                case SDL_QUIT:
+                exit(0);
+                break;
+                case SDL_KEYDOWN:
+                switch (event.key.keysym.sym)
+                {
+                    case SDLK_p:
+                    takeScreenshot("test.bmp");
+                    break;
+                    case SDLK_ESCAPE:
+                    exit(0);
+                    break;
+                    default :
+                    camera->OnKeyboard(event.key);
+                }
+                break;
+                case SDL_MOUSEMOTION:
+                camera->OnMouseMotion(event.motion);
+                break;
+                case SDL_MOUSEBUTTONUP:
+                case SDL_MOUSEBUTTONDOWN:
+                camera->OnMouseButton(event.button);
+                break;
+            }
+        }
+
+        current_time = SDL_GetTicks();
+        ellapsed_time = current_time - last_time;
+        last_time = current_time;
+
+       
+        
+        Dessiner();
+
+        stop_time = SDL_GetTicks();
+        if ((stop_time - last_time) < time_per_frame)
+        {
+            //SDL_Delay(time_per_frame - (stop_time - last_time));
+        }
+
+    }
+
+    return 0;
+}
+ 
+
+
+void Dessiner()
+{
+    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+ 
+    glMatrixMode( GL_MODELVIEW );
+    glLoadIdentity( );
+ 
+//     gluLookAt(3,4,2,0,0,0,0,0,1);
+    
+    camera->look();
+    
+    ground1->setTexture(texture2);
+    ground1->drawGround();
+    
+    cube1->setTexture(texture1);
+    cube1->drawCube();
+    cube2->setTexture(texture1);
+    cube2->drawCube();
+//     cube3->setTexture(texture1);
+//     cube3->drawCube();
+    
+ 
+    glFlush();
+    SDL_GL_SwapBuffers();
+
+}

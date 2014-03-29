@@ -1,0 +1,75 @@
+#include "GroundClass.h"
+
+
+//Constructors
+GroundClass::GroundClass()
+{}
+
+GroundClass::GroundClass(float Height, float Size):
+height_(Height), size_(Size)
+{}
+
+//Destructor
+GroundClass::~GroundClass()
+{}
+
+//Getters
+float GroundClass::getHeight()
+{
+    return height_;
+}
+
+float GroundClass::getSize()
+{
+    return size_;
+}
+
+GLuint GroundClass::getTexture()
+{
+    return texture_;
+}
+
+//Setters
+void GroundClass::setHeight(float newHeight)
+{
+    height_ = newHeight;
+}
+
+void GroundClass::setSize(float newSize)
+{
+    size_ = newSize;
+}
+
+void GroundClass::setTexture(GLuint newTexture)
+{
+    texture_ = newTexture;
+}
+
+void GroundClass::drawGround()
+{
+    glBindTexture(GL_TEXTURE_2D, texture2);
+    float groundSize = this->getSize();
+    float groundHeight = this->getHeight();
+    glBegin(GL_QUADS);
+    
+//         glColor3ub(255,0,0);
+        
+        //upper left
+        glTexCoord2d(0,10);
+        glVertex3d(groundSize, -groundSize, groundHeight);
+        
+        //upper right
+        glTexCoord2d(0,0);
+        glVertex3d(-groundSize, -groundSize, groundHeight);
+        
+        //lower right
+        glTexCoord2d(10,0); 
+        glVertex3d(-groundSize, groundSize, groundHeight);
+        
+        //lower left
+        glTexCoord2d(10,10); 
+        glVertex3d(groundSize, groundSize, groundHeight);
+    
+    
+    glEnd();
+}
